@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proj/components/my_textfield.dart';
+import 'package:proj/history_page.dart';
 
 class FitCheck extends StatelessWidget {
   FitCheck({super.key});
@@ -12,7 +13,26 @@ class FitCheck extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fit check'),
+        title: const Text('Fit check', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 25.0), // Adjust the padding as needed
+            child: IconButton(
+              icon: Icon(Icons.history),
+              onPressed: () {
+                // Add your history functionality here
+
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HistoryPage()),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(

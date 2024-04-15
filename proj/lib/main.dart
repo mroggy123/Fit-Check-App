@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proj/fit_check.dart';
 import 'package:proj/login_page.dart';
 
 void main() {
