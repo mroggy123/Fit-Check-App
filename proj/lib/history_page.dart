@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({super.key});
+  const HistoryPage({Key? key}) : super(key: key);
 
   @override
   State<HistoryPage> createState() => _HistoryPageState();
@@ -48,20 +48,45 @@ class Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text("Health Status On ${today.toString().split(" ")[0]}"),
-        Container(
-          child: TableCalendar(
-            selectedDayPredicate: (day) => isSameDay(day, today),
-            focusedDay: today,
-            firstDay: DateTime.utc(2010, 10, 16),
-            lastDay: DateTime.utc(2030, 3, 14),
-            onDaySelected: onDaySelected,
+    return Container(
+      margin: EdgeInsets.all(20.0), // Margin for the container
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!), // Border color
+        borderRadius: BorderRadius.circular(12.0), // Border radius
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5), // Shadow color
+            spreadRadius: 2, // Spread radius
+            blurRadius: 5, // Blur radius
+            offset: Offset(0, 3), // Offset of the shadow
           ),
-        ),
-        // Add your other widgets here
-      ],
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Health Status On ${today.toString().split(" ")[0]}",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(8.0),
+            child: TableCalendar(
+              selectedDayPredicate: (day) => isSameDay(day, today),
+              focusedDay: today,
+              firstDay: DateTime.utc(2010, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              onDaySelected: onDaySelected,
+            ),
+          ),
+          // Add your other widgets here
+        ],
+      ),
     );
   }
 }
+
