@@ -9,7 +9,7 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  DateTime today = DateTime.now(); // Declare today variable
+  DateTime today = DateTime.now();
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -28,9 +28,9 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: Colors.white, // Set the color of the back button to white
+          color: Colors.white,
           onPressed: () {
-            Navigator.of(context).pop(); // Implement your navigation logic here
+            Navigator.of(context).pop();
           },
         ),
       ),
@@ -48,7 +48,7 @@ class Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20.0), // Margin for the container
+      margin: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey[300]!), // Border color
         borderRadius: BorderRadius.circular(12.0), // Border radius
@@ -73,27 +73,24 @@ class Content extends StatelessWidget {
             ),
           ),
           Container(
-  padding: const EdgeInsets.all(8.0),
-  child: TableCalendar(
-    selectedDayPredicate: (day) => isSameDay(day, today),
-    focusedDay: today,
-    firstDay: DateTime.utc(2010, 10, 16),
-    lastDay: DateTime.utc(2030, 3, 14),
-    onDaySelected: onDaySelected,
-    calendarStyle: const CalendarStyle(
-      selectedDecoration: BoxDecoration(
-        color: Colors.black, // Set selected date color to black
-        shape: BoxShape.circle, // You can adjust the shape as per your preference
-      ),
-      selectedTextStyle: TextStyle(color: Colors.white), // Set text color for selected dates
-    ),
-  ),
-),
-
-          // Add your other widgets here
+            padding: const EdgeInsets.all(8.0),
+            child: TableCalendar(
+              selectedDayPredicate: (day) => isSameDay(day, today),
+              focusedDay: today,
+              firstDay: DateTime.utc(2010, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              onDaySelected: onDaySelected,
+              calendarStyle: const CalendarStyle(
+                selectedDecoration: BoxDecoration(
+                  color: Colors.black,
+                  shape: BoxShape.circle,
+                ),
+                selectedTextStyle: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
-

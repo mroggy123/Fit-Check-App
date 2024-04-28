@@ -32,9 +32,6 @@ class LoginPage extends StatelessWidget {
     String storedPassword = prefs.getString('password') ?? '';
 
     if (username == storedUsername && password == storedPassword) {
-      // Credentials are correct, navigate to the next screen or perform desired action
-      // For now, let's just print a success message
-      print('Login Successful!');
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => FitCheck()),

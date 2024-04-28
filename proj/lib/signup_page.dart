@@ -20,7 +20,7 @@ class SignUpPage extends StatelessWidget {
           backgroundColor: Colors.red,
         ),
       );
-      return; // Exit the method without proceeding further
+      return;
     }
 
     if (pass1.text == pass2.text) {
@@ -37,14 +37,10 @@ class SignUpPage extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginPage(), // Replace AnotherPage with the page you want to navigate to
+          builder: (context) => LoginPage(),
         ),
       );
-      // You might want to add more sophisticated error handling here
-      // and provide feedback to the user if something goes wrong.
-      // For simplicity, we're omitting that here.
     } else {
-      // Passwords don't match, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Passwords do not match.'),
@@ -81,7 +77,7 @@ class SignUpPage extends StatelessWidget {
                 MyTextField(
                   controller: pass1,
                   hintText: 'enter password',
-                  obscureText: true, // Change to true for password field
+                  obscureText: true,
                 ),
 
                 const SizedBox(height: 10),
@@ -89,7 +85,7 @@ class SignUpPage extends StatelessWidget {
                 MyTextField(
                   controller: pass2,
                   hintText: 'confirm password',
-                  obscureText: true, // Change to true for password field
+                  obscureText: true,
                 ),
 
                 const SizedBox(height: 20),
@@ -97,7 +93,6 @@ class SignUpPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => _signUp(context),
                   child: const Text('Sign up'),
-                  
                 ),
 
                 ElevatedButton(
