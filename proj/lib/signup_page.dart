@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proj/components/my_textfield.dart';
+import 'package:proj/login_page.dart';
 import 'package:proj/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +32,12 @@ class SignUpPage extends StatelessWidget {
         const SnackBar(
           content: Text('Sign up successful'),
           backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(), // Replace AnotherPage with the page you want to navigate to
         ),
       );
       // You might want to add more sophisticated error handling here
@@ -90,6 +97,7 @@ class SignUpPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => _signUp(context),
                   child: const Text('Sign up'),
+                  
                 ),
 
                 ElevatedButton(
