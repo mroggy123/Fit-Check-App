@@ -1,20 +1,60 @@
+// fit_check.dart
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:proj/changepass.dart';
 import 'package:proj/components/my_textfield.dart';
+import 'package:proj/fit_checking_model.dart';
 import 'package:proj/history_page.dart';
 import 'package:proj/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class FitCheck extends StatelessWidget {
+class FitCheck extends StatefulWidget {
   FitCheck({super.key});
 
+  @override
+  State<FitCheck> createState() => _FitCheckState();
+}
+
+class _FitCheckState extends State<FitCheck> {
   final heightController = TextEditingController();
   final weightController = TextEditingController();
   final bpController = TextEditingController();
 
+  List<FitCheckingData> healthdata = List.empty(growable: true);
+  late SharedPreferences sp;
+
+  @override
+  void initState() {
+    getSharedPrefrences();
+    super.initState();
+  }
+
+  Future<void> getSharedPrefrences() async {
+    sp = await SharedPreferences.getInstance();
+    readFromSp();
+  }
+
+  void saveIntoSp() {
+    List<String> contactListString =
+        healthdata.map((contact) => jsonEncode(contact.toJson())).toList();
+    sp.setStringList('myData', contactListString);
+  }
+
+  void readFromSp() {
+    List<String>? hd = sp.getStringList('myData');
+    if (hd != null) {
+      healthdata = hd
+          .map((contact) => FitCheckingData.fromJson(json.decode(contact)))
+          .toList();
+    }
+    setState(() {});
+  }
+
   Future<String> _getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('username') ??
-        ''; // Retrieve username from shared preferences
+    return prefs.getString('username') ?? '';
   }
 
   @override
@@ -23,10 +63,8 @@ class FitCheck extends StatelessWidget {
       future: _getUserName(),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // While waiting for username retrieval, return a loading indicator
           return const CircularProgressIndicator();
         } else {
-          // Once username is retrieved, display the fitcheck app page
           return Scaffold(
             appBar: AppBar(
               title: const Text('Fit check',
@@ -75,8 +113,19 @@ class FitCheck extends StatelessWidget {
                     accountEmail: null,
                   ),
                   ListTile(
-                    leading: const Icon(Icons.exit_to_app),
-                    title: const Text('Logout'),
+                    leading: Icon(Icons.lock),
+                    title: Text('Change Password'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangePasswordPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.exit_to_app),
+                    title: Text('Logout'),
                     onTap: () {
                       Navigator.pushAndRemoveUntil(
                         context,
@@ -84,7 +133,7 @@ class FitCheck extends StatelessWidget {
                         (route) => false,
                       );
                     },
-                  )
+                  ),
                 ],
               ),
             ),
@@ -147,6 +196,23 @@ class FitCheck extends StatelessWidget {
                       } else {
                         bpStatus = 'Hypertensive Crisis';
                       }
+
+                      // Create new health data entry
+                      FitCheckingData newData = FitCheckingData(
+                        date: DateTime.now().toString(),
+                        height: height,
+                        weight: weight,
+                        bp: bp,
+                        bmi: bmi,
+                        bmiCategory: bmiCategory,
+                        bpStatus: bpStatus,
+                      );
+
+                      // Add to list and save
+                      setState(() {
+                        healthdata.add(newData);
+                        saveIntoSp();
+                      });
 
                       // Show result
                       showDialog(

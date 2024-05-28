@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:proj/fit_checking_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -10,11 +14,35 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   DateTime today = DateTime.now();
+  List<FitCheckingData> hlist = [];
+  List<FitCheckingData> filteredList = [];
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
+      filteredList = hlist.where((data) => isSameDay(DateTime.parse(data.date), today)).toList();
     });
+  }
+
+  @override
+  void initState() {
+    getSharedPrefrences();
+    super.initState();
+  }
+
+  Future<void> getSharedPrefrences() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    readFromSp(sp);
+  }
+
+  void readFromSp(SharedPreferences sp) {
+    List<String>? healthdata = sp.getStringList('myData');
+    if (healthdata != null) {
+      hlist = healthdata
+          .map((contact) => FitCheckingData.fromJson(json.decode(contact)))
+          .toList();
+    }
+    setState(() {});
   }
 
   @override
@@ -34,63 +62,64 @@ class _HistoryPageState extends State<HistoryPage> {
           },
         ),
       ),
-      body: Content(onDaySelected: _onDaySelected, today: today),
+      body: Content(onDaySelected: _onDaySelected, today: today, filteredList: filteredList),
     );
   }
 }
 
 class Content extends StatelessWidget {
-  const Content({super.key, required this.onDaySelected, required this.today});
+  Content({
+    super.key,
+    required this.onDaySelected,
+    required this.today,
+    required this.filteredList,
+  });
 
   final Function(DateTime, DateTime) onDaySelected;
   final DateTime today;
+  final List<FitCheckingData> filteredList;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!), // Border color
-        borderRadius: BorderRadius.circular(12.0), // Border radius
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5), // Shadow color
-            spreadRadius: 2, // Spread radius
-            blurRadius: 5, // Blur radius
-            offset: const Offset(0, 3), // Offset of the shadow
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.all(10), // Adjust margin as needed
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black), // Border color
+            borderRadius: BorderRadius.circular(10), // Border radius
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Health Status On ${today.toString().split(" ")[0]}",
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+          child: TableCalendar(
+            focusedDay: today,
+            firstDay: DateTime.utc(2010, 10, 16),
+            lastDay: DateTime.utc(2030, 3, 14),
+            selectedDayPredicate: (day) {
+              return isSameDay(today, day);
+            },
+            onDaySelected: onDaySelected,
           ),
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            child: TableCalendar(
-              selectedDayPredicate: (day) => isSameDay(day, today),
-              focusedDay: today,
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              onDaySelected: onDaySelected,
-              calendarStyle: const CalendarStyle(
-                selectedDecoration: BoxDecoration(
-                  color: Colors.black,
-                  shape: BoxShape.circle,
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredList.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text("Date: ${filteredList[index].date.split(" ")[0]}"),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Height: ${filteredList[index].height} cm"),
+                    Text("Weight: ${filteredList[index].weight} kg"),
+                    Text("BP: ${filteredList[index].bp} mmHg"),
+                    Text("BMI: ${filteredList[index].bmiCategory}"),
+                    Text("BP Status: ${filteredList[index].bpStatus}"),
+                  ],
                 ),
-                selectedTextStyle: TextStyle(color: Colors.white),
-              ),
-            ),
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

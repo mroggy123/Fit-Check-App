@@ -8,7 +8,7 @@ import 'package:proj/components/my_textfield.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
-
+  String check = 'a';
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -32,6 +32,8 @@ class LoginPage extends StatelessWidget {
     String storedPassword = prefs.getString('password') ?? '';
 
     if (username == storedUsername && password == storedPassword) {
+      check = 'b';
+      prefs.setString('key', 'check');
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => FitCheck()),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proj/components/my_textfield.dart';
 import 'package:proj/login_page.dart';
-import 'package:proj/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -93,17 +92,6 @@ class SignUpPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => _signUp(context),
                   child: const Text('Sign up'),
-                ),
-
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SharedPreferencesViewer()),
-                    );
-                  },
-                  child: const Text('View SharedPreferences Data'),
                 ),
               ],
             ),
